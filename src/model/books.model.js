@@ -1,27 +1,32 @@
 import mongoose from 'mongoose';
 import Joi from 'joi';
 import UserSchema from './user.model'
+const Schema = mongoose.Schema;
 
-const BooksSchema = mongoose.Schema({
+const BooksSchema = Schema({
+    _id: Schema.Types.ObjectId,
+    owner: [{ type: Schema.Types.ObjectId, ref: 'users' }],
+    updatedBy: [{ type: Schema.Types.ObjectId, ref: 'users' }],
+    author:[{ type: Schema.Types.ObjectId, ref: 'users' }],
     name: String,
-    owner:[{type: mongoose.Schema.Types.ObjectId, ref: 'UserSchema'}],
     genere:String,
     publisher:String,
-    price: Number,
-    lastupdated:{type:Date, default:Date.now},
-    delete:{type:Boolean,default:false},
-    lastUpdatedBy:{type:Object}
-}, {collection : 'books'});
+    price:Number,
+    delete:Boolean,
+    lastupdated:[{type:Date,default: Date.now()}]
+  });
 
 let BooksModel = mongoose.model('books', BooksSchema);
 
 BooksModel.getAll = () => {
     return BooksModel.find({delete:false})
+    .populate('owner', ['firstname','lastname'])
     .sort('_id');
 }
 
 BooksModel.getBook = (book_id) => {
-    return BooksModel.find({'_id':book_id,delete:false});
+    return BooksModel.find({'_id':book_id,delete:false})
+    .populate('owner', ['firstname','lastname']);
 }
 
 BooksModel.removeBooks = (booksName) => {

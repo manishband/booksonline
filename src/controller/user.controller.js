@@ -3,13 +3,13 @@ import Joi from 'joi';
 import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
+import mongoose from 'mongoose'
 
 const controller = {};
 
 controller.getAll = async (req, res) => {
     try {
-        const user = await Users.getAll();
-        res.send(user);
+        return await Users.getAll();
     }
     catch(err) {
         res.send('Got error in getAll');
@@ -41,12 +41,12 @@ controller.deleteUser = async (req, res) => {
 
 controller.checkUser = async (req, res) => {
     try{
-        
         const { error } = validateLoginUser(req.body);
         if (error) throw error.details[0].message;
         const user = await Users.findEmail({email:req.body.email});
         const pass = await bcrypt.compare(req.body.password,user.password);
         if (!user || !pass) throw `Invalid Email or password`;
+        req.session.user = _.pick(user,['firstname','lastname','role','_id']);
         req.flash('success', `Users login successfully`);
         res.redirect('/book/allbooks');
     }catch(err){
@@ -64,6 +64,7 @@ controller.addUser = async (req, res) => {
         let user = new Users(_.pick(req.body,['firstname','lastname','email','password']));
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(user.password,salt);
+        user._id = new mongoose.Types.ObjectId();
         await user.save();
         req.flash('success', 'User successfully Added in the system');
         res.redirect('/book/allbooks');

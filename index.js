@@ -2,6 +2,7 @@ import express from "express";
 import bodyParser from 'body-parser';
 import cookieParser from'cookie-parser';
 import session from 'express-session';
+import passport from 'passport'
 import path from 'path';
 import config from'./src/config/config.env';
 import connectToDb from './src/config/db';
@@ -24,6 +25,8 @@ app.use(session({
     resave: 'true',
     secret: 'secret'
 }));
+app.use(passport.initialize())
+app.use(passport.session())
 app.set('views', path.join(__dirname,'src','views'));
 app.engine('handlebars', exphbs({defaultLayout: 'main',layoutsDir:'src/views/layouts'}));
 app.set('view engine', 'handlebars');

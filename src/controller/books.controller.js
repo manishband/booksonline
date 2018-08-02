@@ -2,6 +2,7 @@ import Book from '../model/books.model';
 import Users from '../model/user.model';
 import Joi from 'joi';
 import _ from 'lodash';
+import mongoose from 'mongoose';
 
 const controller = {};
 controller.getAll = async (req, res) => {
@@ -24,6 +25,24 @@ controller.getAll = async (req, res) => {
         res.send('Got error in getAll');
     }
 }
+controller.getAuthors = async (req, res) => {
+    try {
+        const user = await Users.getAll();
+        let authors = [];
+        user.forEach(key=>{
+            let element ={}
+            element.firstname = key.firstname,
+            element.lastname = key.lastname,
+            element.value = key._id
+            authors.push(element);
+        })
+        res.render('addBooks',{author:authors,errorLogin:req.flash('error')});
+    }
+    catch(err) {
+        res.send('Got error in getAll');
+    }
+}
+
 controller.getBook = async (req, res) => {
     try {
         const book_id = req.params.id;
@@ -39,12 +58,15 @@ controller.addBook = async (req, res) => {
    try {
         const { error } = validateAddBook(req.body);
         if (error) throw error.details[0].message;
-        const savedBook = await new Book({
+        let savedBook = new Book({
+            _id: new mongoose.Types.ObjectId(),
             name: req.body.name,
             genere:req.body.genere,
             publisher:req.body.publisher,
-            price:req.body.price
+            price:req.body.price,
+            author:req.body.author
         }); 
+
         await savedBook.save();
         req.flash('success', `Book successfully added`);
         res.redirect('/book/allbooks');
@@ -69,13 +91,15 @@ controller.editBook = async (req, res) => {
     try {
         const { error } = validateAddBook(req.body);
         if (error) throw error.details[0].message;
-        const savedBook = await new Book({
+        let savedBook = await new Book({
+            _id: new mongoose.Types.ObjectId(),
             name: req.body.name,
             genere:req.body.genere,
             publisher:req.body.publisher,
-            price:req.body.price
+            price:req.body.price,
+            author:req.body.author
         }); 
-        //await savedBook.save();
+        await savedBook.save();
         res.send({status:'success',message:'Book updated successfully '});
     }
     catch(err) {
@@ -87,7 +111,8 @@ function validateAddBook (book) {
       name: Joi.string().max(255).required(),
       genere: Joi.string().max(255).required(),
       publisher: Joi.string().max(255).required(),
-      price: Joi.string().max(255).required()
+      price: Joi.string().max(255).required(),
+      author:Joi.string().max(255).required(),
     };
     return Joi.validate(book, schema);
 }

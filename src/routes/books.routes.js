@@ -1,9 +1,14 @@
 import express from "express";
 import bookController from "../controller/books.controller"
+import userController from "../controller/user.controller"
 
 const router = express.Router()
 
 router.get('/allbooks', (req, res) => {
+    if(!req.session.user){
+        req.session.destroy();
+        res.redirect('/user/login');
+    }
     bookController.getAll(req, res);
 });
 
@@ -12,7 +17,7 @@ router.get('/view/:id', (req, res) => {
 });
 
 router.get('/addBook', (req, res) => {
-    res.render('addBooks',{errorLogin:req.flash('error')});
+    bookController.getAuthors(req, res);
 });
 
 router.post('/addBook', (req, res) => {

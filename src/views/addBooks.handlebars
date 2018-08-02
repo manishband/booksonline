@@ -17,7 +17,6 @@
         </div>
       {{/if}}
         <h3>add Books info</h3>
-        
         <form class="form-horizontal" method="POST" role="form" id="addBooks" action="/book/addBook">
           <div class="form-group">
             <label class="col-lg-3 control-label">Book Name:</label>
@@ -41,6 +40,20 @@
             <label class="col-md-3 control-label">Genre:</label>
             <div class="col-md-8">
               <input class="form-control" type="text" value="" name="genere">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Select Author:</label>
+            <div class="col-md-8">
+              <select class="form-control" name="author">
+                <option value="">Select Author</option>
+                {{#each author}}
+                {{this.firstname}}
+                  {{#if this.value}}
+                      <option value="{{this.value}}">{{this.firstname}} {{this.lastname}}</option>
+                  {{/if}}
+                {{/each}}
+              </select>
             </div>
           </div>
           <div class="form-group">
