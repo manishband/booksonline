@@ -41,7 +41,10 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
             <li><a href="/book/allbooks">Books</a></li>
-            <li><a href="/user/login">user</a></li>
+            <li><a href="#.">view Profile</a></li>
+          </ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="user/logout">Logout</a></li>
           </ul>
         </div><!--/.nav-collapse -->
       </div>
@@ -63,6 +66,7 @@
     <script src="https://getbootstrap.com/docs/3.3/assets/js/ie10-viewport-bug-workaround.js"></script>
     <script>
     $(document).ready(()=>{
+      $(".alert").delay(4000).slideUp();
         $("#myModal").on("show.bs.modal", (e)=> {
             let id = $(e.relatedTarget).data('viewid');
             let condition = $(e.relatedTarget).data('condition');
@@ -71,7 +75,9 @@
                   var elements = `<li><span>Book Name</span>${data.name}</li>
                             <li><span>Genere</span>${data.genere}</li>
                             <li><span>Price</span>${data.price}</li>
-                            <li><span>Publisher</span>${data.publisher}</li>`
+                            <li><span>Publisher</span>${data.publisher}</li>
+                            <li><span>Author</span>${data.author.firstname} ${data.author.lastname}</li>
+                            `
                   $("#viewModel ul").html(elements);
                   $(".submit").hide();
                   $(".modal-title").text('Book Details');
@@ -81,7 +87,9 @@
                   var elements = `<li><span>Book Name</span> <input class="form-control" type="text" name="name" value="${data.name}"/></li>
                             <li><span>Genere</span><input class="form-control" type="text" name="genere" value="${data.genere}"/> </li>
                             <li><span>Price</span><input class="form-control" type="text" name="price" value="${data.price}"/> </li>
-                            <li><span>Publisher</span><input class="form-control" type="text" name="publisher" value="${data.publisher}"/> </li>`
+                            <li><span>Publisher</span><input class="form-control" type="text" name="publisher" value="${data.publisher}"/> </li>
+                            <input type="hidden" name="book_id" value = "${data._id}" />
+                            `
                   $("#viewModel ul").html(elements);
                   $(".submit").show();
                   $(".modal-title").text('Edit Book Details');

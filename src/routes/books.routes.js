@@ -5,10 +5,6 @@ import userController from "../controller/user.controller"
 const router = express.Router()
 
 router.get('/allbooks', (req, res) => {
-    if(!req.session.user){
-        req.session.destroy();
-        res.redirect('/user/login');
-    }
     bookController.getAll(req, res);
 });
 

@@ -11,13 +11,13 @@
   <table class="table table-bordered">
     <thead>
       <tr>
-        <th>Sr No</th>
-        <th>Book Name</th>
-        <th>Publisher</th>
-        <th>Owner/Auther</th>
-        <th>Price</th>
-        <th>Genre</th>
-        <th>View/Edit</th>
+        <th data-sort="id">Sr No</th>
+        <th data-sort="name">Book Name</th>
+        <th data-sort="publisher">Publisher</th>
+        <th data-sort="author">Author</th>
+        <th data-sort="price">Price</th>
+        <th data-sort="genere">Gener</th>
+        <th >View/Edit</th>
       </tr>
     </thead>
     <tbody>
@@ -27,11 +27,11 @@
                 <td>{{@index}}</td>
                 <td>{{this.name}}</td>
                 <td>{{this.publisher}}</td>
-                <td>{{this.owner.firstname}} {{this.owner.lastname}}</td>
+                <td>{{this.author.firstname}} {{this.author.lastname}}</td>
                 <td>{{this.price}}</td>
                 <td>{{this.genere}}</td>
                 <td>
-                    <button class="btn button-primary" data-viewId="{{this.id}}" data-condition="edit" data-toggle="modal" data-target="#myModal">Edit</button>
+                    {{#if this.setEdit}}<button class="btn button-primary" data-viewId="{{this.id}}" data-condition="edit" data-toggle="modal" data-target="#myModal">Edit</button>{{/if}}
                     <button class="btn btn-primary" data-viewId="{{this.id}}" data-condition="view" data-toggle="modal" data-target="#myModal">View</button>
                 </td>
             </tr>

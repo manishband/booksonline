@@ -2,7 +2,7 @@
     <h1>Edit Profile</h1>
   	<hr>
 	<div class="row">
-      <!-- left column -->
+      <!-- left column
       <div class="col-md-3">
         <div class="text-center">
           <img src="//placehold.it/100" class="avatar img-circle" alt="avatar">
@@ -10,15 +10,23 @@
           
           <input type="file" class="form-control">
         </div>
-      </div>
+      </div> -->
       
       <!-- edit form column -->
       <div class="col-md-9 personal-info">
-        <!--<div class="alert alert-info alert-dismissable">
-          <a class="panel-close close" data-dismiss="alert">×</a> 
-          <i class="fa fa-coffee"></i>
-          This is an <strong>.alert</strong>. Use this to show important messages to the user.
-        </div> -->
+        {{#if errorLogin}}
+          <div class="alert alert-danger alert-dismissable">
+            <a class="panel-close close" data-dismiss="alert">×</a> 
+            <i class="fa fa-coffee"></i>
+            {{ errorLogin }}
+          </div>
+        {{/if}}
+        {{#if successAlert}}
+          <div class="alert alert-success fade in">
+              <a href="#" class="close" data-dismiss="alert">&times;</a>
+              <strong>Success!</strong> {{successAlert}}
+          </div>
+        {{/if}}
         <h3>Personal info</h3>
         
         <form class="form-horizontal" role="form">

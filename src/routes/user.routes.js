@@ -4,11 +4,11 @@ import userController from "../controller/user.controller"
 const router = express.Router()
 
 // Login routers details
-router.get('/out', (req, res) => {
-    if(!req.session.user){
+router.get('/logout', (req, res) => {
+    if(req.session.user){
         req.session.destroy();
-        res.redirect('/user/login');
     }
+    res.render('login');
 });
 // Login routers details
 router.get('/login', (req, res) => {
@@ -32,11 +32,11 @@ router.post('/register', (req, res) => {
 
 // user details update
 router.get('/view/:id', (req, res) => {
-    //res.render('home');
-    userController.getUsers(req,res);
+    res.render('user',{userData:userController.updateUser(req,res),errorLogin:req.flash('error')})
 });
 
 router.delete('/deleteuser', (req, res) => {
+    
     userController.deleteUser(req, res);
 });
 

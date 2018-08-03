@@ -13,16 +13,26 @@ controller.getAll = async (req, res) => {
             let element = {};
             element.name = key.name;
             element.publisher= key.publisher;
-            element.owner = key.owner;
+            element.author = key.author;
             element.price =key.price;
             element.genere = key.genere;
             element.id =key.id;
+            if(req.session.user != undefined){
+                if(req.session.user.role == 'Admin'){
+                    element.setEdit = 'show';
+                }else{
+                    element.setEdit = (key.id == req.session.user._id)? 'show' :'';
+                }
+            }else{
+                element.setEdit = '';
+            }
+            
             data.push(element)
         });
         res.render('books',{booksResult:data,successAlert:req.flash('success')});
     }
     catch(err) {
-        res.send('Got error in getAll');
+        res.send(`${err}`);
     }
 }
 controller.getAuthors = async (req, res) => {
@@ -47,7 +57,7 @@ controller.getBook = async (req, res) => {
     try {
         const book_id = req.params.id;
         const books = await Book.getBook(book_id);
-        res.send(_.pick(books[0],['name','genere','publisher','price','owner']));
+        res.send(_.pick(books[0],['name','genere','publisher','price','author','_id']));
     }
     catch(err) {
         res.send(`Got error in getBook ${err}`);
@@ -60,11 +70,12 @@ controller.addBook = async (req, res) => {
         if (error) throw error.details[0].message;
         let savedBook = new Book({
             _id: new mongoose.Types.ObjectId(),
+            updatedBy: req.session.user._id,
+            author:req.body.author,
             name: req.body.name,
             genere:req.body.genere,
             publisher:req.body.publisher,
             price:req.body.price,
-            author:req.body.author
         }); 
 
         await savedBook.save();
@@ -89,17 +100,16 @@ controller.deleteBook = async (req, res) => {
 }
 controller.editBook = async (req, res) => {
     try {
-        const { error } = validateAddBook(req.body);
+        const { error } = validateEditBook(req.body);
         if (error) throw error.details[0].message;
-        let savedBook = await new Book({
-            _id: new mongoose.Types.ObjectId(),
-            name: req.body.name,
-            genere:req.body.genere,
-            publisher:req.body.publisher,
-            price:req.body.price,
-            author:req.body.author
-        }); 
-        await savedBook.save();
+        let book = await Book.editBook(req.body.book_id);
+            book.updatedBy =  req.session.user._id;
+            book.name =  req.body.name;
+            book.genere = req.body.genere;
+            book.publisher = req.body.publisher;
+            book.price = req.body.price;
+            const log  = await book.save();
+
         res.send({status:'success',message:'Book updated successfully '});
     }
     catch(err) {
@@ -113,6 +123,16 @@ function validateAddBook (book) {
       publisher: Joi.string().max(255).required(),
       price: Joi.string().max(255).required(),
       author:Joi.string().max(255).required(),
+    };
+    return Joi.validate(book, schema);
+}
+function validateEditBook (book) {
+    const schema = {
+      name: Joi.string().max(255).required(),
+      genere: Joi.string().max(255).required(),
+      publisher: Joi.string().max(255).required(),
+      price: Joi.string().max(255).required(),
+      book_id:Joi.string()
     };
     return Joi.validate(book, schema);
 }

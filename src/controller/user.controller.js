@@ -16,11 +16,10 @@ controller.getAll = async (req, res) => {
     }
 }
 
-controller.getUsers = async (req, res) => {
+controller.updateUser = async (req, res) => {
     try {       
         const id = req.params.id;  
-        const user = await Users.getUser(id);
-        res.send(_.pick(user[0],['firstname','lastname','email','_id'])); 
+        return await Users.getUser(id); 
     }
     catch(err) {
        // res.send('Got error in getAll');
