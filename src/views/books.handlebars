@@ -6,7 +6,11 @@
         <strong>Success!</strong> {{successAlert}}
     </div>
   {{/if}}
-  <p style="text-align:right"><a href="/book/addBook">Add Books</a></p>
+  <p style="text-align:right">
+    <a href="/user/edit/{{userDetail._id}}" >Edit Profile</a>
+    {{#if userDetail.role}}<a href="/user/view" style="margin-left:10px" >View users</a> {{/if}}
+    <a href="/book/addBook" style="margin-left:10px">Add Books</a>
+  </p>
   <div class="table-responsive">          
   <table class="table table-bordered">
     <thead>

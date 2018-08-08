@@ -1,0 +1,37 @@
+<div class="container">
+  <h2>List of Users</h2>
+  
+  <div class="table-responsive">          
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th data-sort="id">Sr No</th>
+        <th data-sort="firstname">First Name</th>
+        <th data-sort="lastname">Last Name</th>
+        <th data-sort="email">Email</th>
+        <th data-sort="role">Role</th>
+        <th >Edit/Delete</th>
+      </tr>
+    </thead>
+    <tbody>
+        {{#each userResult}}
+         {{#if this.firstname}}
+            <tr>
+                <td>{{@index}}</td>
+                <td>{{this.firstname}}</td>
+                <td>{{this.lastname}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.role}}</td>
+                <td>
+                    {{#if this.role}}<a class="btn button-primary" href="/user/edit/{{this._id}}" data-userId="{{this._id}}" >Edit</a>{{/if}}
+                    
+                </td>
+            </tr>
+          {{/if}}
+      {{/each}}
+      
+    </tbody>
+  </table>
+   </div>
+</div>
+

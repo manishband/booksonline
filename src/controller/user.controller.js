@@ -9,23 +9,40 @@ const controller = {};
 
 controller.getAll = async (req, res) => {
     try {
-        return await Users.getAll();
+        const users = await Users.getAll();
+        res.render('viewUsers',{userResult:users}) ;
     }
     catch(err) {
         res.send('Got error in getAll');
     }
 }
 
-controller.updateUser = async (req, res) => {
+controller.getUser = async (req, res) => {
     try {       
         const id = req.params.id;  
-        return await Users.getUser(id); 
+        let user = await Users.findEmail({'_id':id});
+        res.render('user',{userData:user,errorLogin:req.flash('error')})
     }
     catch(err) {
        // res.send('Got error in getAll');
         res.send(err);
     }
 }
+controller.updateUser = async (req, res) => {
+    try {       
+        const { error } = validateRegisterUser(req.body);
+        if (error) throw error.details[0].message;
+        let user = await Users.findEmail({'_id':req.body._id});
+        
+        await user.save();
+        req.session.user = _.pick(user,['firstname','lastname','role','_id']);
+    }
+    catch(err) {
+       // res.send('Got error in getAll');
+        res.send(err);
+    }
+}
+
 
 controller.deleteUser = async (req, res) => {
     let userName = req.body.name;
@@ -46,8 +63,9 @@ controller.checkUser = async (req, res) => {
         const pass = await bcrypt.compare(req.body.password,user.password);
         if (!user || !pass) throw `Invalid Email or password`;
         req.session.user = _.pick(user,['firstname','lastname','role','_id']);
-        req.flash('success', `Users login successfully`);
-        res.redirect('/book/allbooks');
+        const token = Users.generateAuthToken(user._id);
+        res.header('x-auth-token',token).redirect('/book/allbooks');
+        //.flash('success', `Users login successfully`)
     }catch(err){
         req.flash('error', `${err}`);
         res.redirect('/user/login');
@@ -65,6 +83,7 @@ controller.addUser = async (req, res) => {
         user.password = await bcrypt.hash(user.password,salt);
         user._id = new mongoose.Types.ObjectId();
         await user.save();
+        req.session.user = _.pick(user,['firstname','lastname','role','_id']);
         req.flash('success', 'User successfully Added in the system');
         res.redirect('/book/allbooks');
     }

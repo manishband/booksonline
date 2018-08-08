@@ -21,7 +21,7 @@ controller.getAll = async (req, res) => {
                 if(req.session.user.role == 'Admin'){
                     element.setEdit = 'show';
                 }else{
-                    element.setEdit = (key.id == req.session.user._id)? 'show' :'';
+                    element.setEdit = (key.updatedBy == req.session.user._id || key.author == req.session.user._id)? 'show' :'';
                 }
             }else{
                 element.setEdit = '';
@@ -29,7 +29,8 @@ controller.getAll = async (req, res) => {
             
             data.push(element)
         });
-        res.render('books',{booksResult:data,successAlert:req.flash('success')});
+        console.log(req.session.user);
+        res.render('books',{userDetail:req.session.user,booksResult:data,successAlert:req.flash('success')});
     }
     catch(err) {
         res.send(`${err}`);

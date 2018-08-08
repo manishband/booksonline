@@ -19,16 +19,18 @@ let sessionStore = new session.MemoryStore;
 app.use(cookieParser());
 app.use(flash());
 app.use(session({
-    cookie: { maxAge: 60000 },
-    store: sessionStore,
-    saveUninitialized: true,
-    resave: 'true',
-    secret: 'secret'
+    key: 'user_sid',
+    secret: 'somerandonstuffs',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        expires: 600000
+    }
 }));
 app.use(passport.initialize())
 app.use(passport.session())
 app.set('views', path.join(__dirname,'src','views'));
-app.engine('handlebars', exphbs({defaultLayout: 'main',layoutsDir:'src/views/layouts'}));
+app.engine('handlebars', exphbs({defaultLayout: 'main',layoutsDir:'src/views/layouts',data:{title:"jhhjkhjkjjhsad"}}));
 app.set('view engine', 'handlebars');
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

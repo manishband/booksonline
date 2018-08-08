@@ -1,11 +1,12 @@
 import mongoose from 'mongoose';
 import Joi from 'joi'
+import jwt from 'jsonwebtoken'
 const Schema = mongoose.Schema;
 
 const UserSchema = Schema({
   _id: Schema.Types.ObjectId,
-  role:String,
-  active:Boolean,
+  role:{type:String,default:'user'},
+  active:{type:Boolean,default:true},
   firstname:String,
   lastname:String,
   email:String,
@@ -16,6 +17,11 @@ let UserModel = mongoose.model('users', UserSchema);
 
 UserModel.getAll = () => {
     return UserModel.find({});
+}
+
+UserModel.generateAuthToken = function(id) {
+  const token = jwt.sign({_id:id},'randonwordsdad');
+  return token;
 }
 
 UserModel.removeUser = (userName) => {

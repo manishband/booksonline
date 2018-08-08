@@ -31,8 +31,8 @@ BooksModel.getBook = (book_id) => {
 BooksModel.editBook = (booksId) => {
     return BooksModel.findById(booksId);
 }
-BooksModel.removeBooks = (booksName) => {
-    return BooksModel.remove({name: booksName});
+BooksModel.removeBooks = (book_id) => {
+    return BooksModel.remove({'_id': book_id});
 }
 
 
