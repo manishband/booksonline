@@ -29,7 +29,6 @@ controller.getAll = async (req, res) => {
             
             data.push(element)
         });
-        console.log(req.session.user);
         res.render('books',{userDetail:req.session.user,booksResult:data,successAlert:req.flash('success')});
     }
     catch(err) {

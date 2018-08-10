@@ -64,7 +64,7 @@ controller.checkUser = async (req, res) => {
         if (!user || !pass) throw `Invalid Email or password`;
         req.session.user = _.pick(user,['firstname','lastname','role','_id']);
         const token = Users.generateAuthToken(user._id);
-        res.header('x-auth-token',token).redirect('/book/allbooks');
+        res.cookie('access_token', token, {httpOnly: true}).redirect('/book/allbooks');
         //.flash('success', `Users login successfully`)
     }catch(err){
         req.flash('error', `${err}`);

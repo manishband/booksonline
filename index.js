@@ -2,7 +2,6 @@ import express from "express";
 import bodyParser from 'body-parser';
 import cookieParser from'cookie-parser';
 import session from 'express-session';
-import passport from 'passport'
 import path from 'path';
 import config from'./src/config/config.env';
 import connectToDb from './src/config/db';
@@ -10,6 +9,7 @@ import user from './src/routes/user.routes';
 import books from './src/routes/books.routes';
 import exphbs from 'express-handlebars'
 import flash from 'connect-flash';
+import auth from './src/controller/auth.controller'
 const port = config.serverPort;
 
 connectToDb();
@@ -24,11 +24,9 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 600000
+        expires: 60000
     }
 }));
-app.use(passport.initialize())
-app.use(passport.session())
 app.set('views', path.join(__dirname,'src','views'));
 app.engine('handlebars', exphbs({defaultLayout: 'main',layoutsDir:'src/views/layouts',data:{title:"jhhjkhjkjjhsad"}}));
 app.set('view engine', 'handlebars');
@@ -43,15 +41,21 @@ app.use(function(req, res, next){
     next();
 });
 app.get('/', (req, res) => {
+    res.header(301)
     res.redirect('/user/login');
 });
-
+app.get('*',(req,res,next)=>{
+    res.locals.user = req.session.user || null;
+    next();
+})
 app.use('/user',user);
-app.use('/book',books);
+app.use('/book',auth,books);
 
 
 
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
    // console.log('server started - ', port);
 });
+
+module.exports = server;

@@ -38,13 +38,18 @@
           <a class="navbar-brand" href="/user/login">Books Online</a>
         </div>
         <div id="navbar" class="navbar-collapse collapse">
+          {{#if user}}
           <ul class="nav navbar-nav">{{data}}
             <li><a href="/book/allbooks">Books</a></li>
-            <li><a href="#.">view Profile</a></li>
+            <li><a href="/user/edit/{{user._id}}">Edit Profile</a></li>
+            {{#if user.role}}<li><a href="/user/view/">View Users</a></li>{{/if}}
           </ul>
+          
           <ul class="nav navbar-nav navbar-right">
+            <li>Welcome {{user.firstname}} {{user.lastname}}</li>
             <li><a href="/user/logout">Logout</a></li>
           </ul>
+          {{/if}}
         </div><!--/.nav-collapse -->
       </div>
     </nav>
@@ -128,7 +133,7 @@
       </form>
     </div>
   </div>
-
+<script src="/public/js/search.js"></script>
   </body>
   
 </html>
