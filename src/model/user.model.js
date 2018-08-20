@@ -1,11 +1,10 @@
 import mongoose from 'mongoose';
-import Joi from 'joi'
 import jwt from 'jsonwebtoken'
 const Schema = mongoose.Schema;
 
 const UserSchema = Schema({
   _id: Schema.Types.ObjectId,
-  role:{type:String,default:'user'},
+  role:{type:Boolean,default:false},
   active:{type:Boolean,default:true},
   firstname:String,
   lastname:String,
@@ -19,8 +18,8 @@ UserModel.getAll = () => {
     return UserModel.find({});
 }
 
-UserModel.generateAuthToken = function(id) {
-  const token = jwt.sign({_id:id},'randonwordsdad');
+UserModel.generateAuthToken = (user)=> {
+  const token = jwt.sign(user,'randonwordsdad');
   return token;
 }
 

@@ -1,6 +1,5 @@
 import Users from '../model/user.model';
 import Joi from 'joi';
-import jwt from 'jsonwebtoken';
 import _ from 'lodash';
 import bcrypt from 'bcrypt';
 import mongoose from 'mongoose'
@@ -22,6 +21,16 @@ controller.getUser = async (req, res) => {
         const id = req.params.id;  
         let user = await Users.findEmail({'_id':id});
         res.render('user',{userData:user,errorLogin:req.flash('error')})
+    }
+    catch(err) {
+       // res.send('Got error in getAll');
+        res.send(err);
+    }
+}
+controller.getUserByID = async (id) => {
+    try {       
+        let user = await Users.findEmail({'_id':id});
+        res.send(user);
     }
     catch(err) {
        // res.send('Got error in getAll');
@@ -62,10 +71,10 @@ controller.checkUser = async (req, res) => {
         const user = await Users.findEmail({email:req.body.email});
         const pass = await bcrypt.compare(req.body.password,user.password);
         if (!user || !pass) throw `Invalid Email or password`;
-        req.session.user = _.pick(user,['firstname','lastname','role','_id']);
-        const token = Users.generateAuthToken(user._id);
-        res.cookie('access_token', token, {httpOnly: true}).redirect('/book/allbooks');
-        //.flash('success', `Users login successfully`)
+        req.session.user = _.pick(user,['firstname','lastname','role','_id']) 
+        req.flash('success', `Users login successfully`);
+        res.redirect('/book/list');
+        //
     }catch(err){
         req.flash('error', `${err}`);
         res.redirect('/user/login');
@@ -85,7 +94,7 @@ controller.addUser = async (req, res) => {
         await user.save();
         req.session.user = _.pick(user,['firstname','lastname','role','_id']);
         req.flash('success', 'User successfully Added in the system');
-        res.redirect('/book/allbooks');
+        res.redirect('/book/list');
     }
     catch(err) {
         req.flash('error', `${err}`)

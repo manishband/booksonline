@@ -2,9 +2,12 @@ import express from "express";
 import bookController from "../controller/books.controller"
 
 const router = express.Router()
+router.get('/list', (req, res) => {
+   res.render('books')
+});
 router.get('/allbooks', (req, res) => {
     bookController.getAll(req, res);
-});
+ });
 
 router.get('/view/:id', (req, res) => {
     bookController.getBook(req, res);

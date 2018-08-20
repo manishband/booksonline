@@ -7,8 +7,25 @@ import mongoose from 'mongoose';
 const controller = {};
 controller.getAll = async (req, res) => {
     try {
-        const books = await Book.getAll();
-        let data = [];
+       let search   =   req.query.search || null;
+       let count = parseInt(req.query.books);
+       var regex = new RegExp(req.query.search, "i")
+       const  books =   await Book.find({
+        $or: [
+          { 'name': regex },
+          { 'genere': regex },
+          { 'publisher': regex }
+        ]
+      }).populate('author', ['firstname', 'lastname']).sort('_id').limit(count);
+       const  totalCount =   await Book.find({
+        $or: [
+          { 'name': regex },
+          { 'genere': regex },
+          { 'publisher': regex }
+        ]
+      })
+        let data = new Object();
+        let book = [];
         books.forEach(key => {
             let element = {};
             element.name = key.name;
@@ -18,18 +35,21 @@ controller.getAll = async (req, res) => {
             element.genere = key.genere;
             element.id =key.id;
             if(req.session.user != undefined){
-                if(req.session.user.role == 'Admin'){
-                    element.setEdit = 'show';
+                if(req.session.user.role == true){
+                    element.editable = true;
                 }else{
-                    element.setEdit = (key.updatedBy == req.session.user._id || key.author == req.session.user._id)? 'show' :'';
+                    element.editable = (key.updatedBy == req.session.user._id || key.author == req.session.user._id)? true :false;
                 }
             }else{
-                element.setEdit = '';
+                element.editable = false;
             }
             
-            data.push(element)
+            book.push(element)
         });
-        res.render('books',{userDetail:req.session.user,booksResult:data,successAlert:req.flash('success')});
+        data.total = Object.keys(totalCount).length;
+        data.count = count;
+        data.books= book
+        res.json(data);
     }
     catch(err) {
         res.send(`${err}`);

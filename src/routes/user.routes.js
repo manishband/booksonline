@@ -1,15 +1,14 @@
 import express from "express";
 import userController from "../controller/user.controller"
+import auth from '../controller/auth.controller'
 
 const router = express.Router()
 
 // Login routers details
 router.get('/logout', (req, res) => {
     if (req.session.user) {
-        req.session.user= ''; 
+        req.session.user = ''
         req.flash('success','You are successfully logout from system');
-        res.clearCookie('user_sid').render('login');
-    }else{
         res.redirect('/user/login');
     }
 });

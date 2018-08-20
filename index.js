@@ -19,12 +19,12 @@ let sessionStore = new session.MemoryStore;
 app.use(cookieParser());
 app.use(flash());
 app.use(session({
-    key: 'user_sid',
+    store:sessionStore,
     secret: 'somerandonstuffs',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        expires: 60000
+        expires: 1800000
     }
 }));
 app.set('views', path.join(__dirname,'src','views'));
