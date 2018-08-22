@@ -41,7 +41,6 @@ app.use(function(req, res, next){
     next();
 });
 app.get('/', (req, res) => {
-    res.header(301)
     res.redirect('/user/login');
 });
 app.get('*',(req,res,next)=>{
@@ -58,4 +57,5 @@ const server = app.listen(port, () => {
    // console.log('server started - ', port);
 });
 
-module.exports = server;
+module.exports = app;
+module.exports = server

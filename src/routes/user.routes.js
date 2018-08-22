@@ -16,7 +16,7 @@ router.get('/logout', (req, res) => {
 router.get('/login', (req, res) => {
     if (req.session.user) {
         req.flash('success','You are already login in system');
-        res.redirect('/book/allbooks');
+        res.redirect('/book/list');
     }
     res.render('login', { errorLogin: req.flash('error'), successLogin : req.flash('success')});
 });

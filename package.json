@@ -7,7 +7,8 @@
     "build": "rimraf dist/ && babel ./ --out-dir dist/ --ignore ./node_modules,./spec,./src/test,./.babelrc,./package.json,./npm-debug.log --copy-files",
     "start": "nodemon dist/index.js",
     "test-init": "node ./node_modules/jasmine/bin/jasmine.js init",
-    "test": "node ./node_modules/jasmine/bin/jasmine.js"
+    "test": "jest --coverage",
+    "testforce": "jest --detectOpenHandles"
   },
   "keywords": [],
   "author": "",
@@ -16,8 +17,8 @@
     "babel-cli": "^6.26.0",
     "babel-preset-es2015": "^6.24.1",
     "body-parser": "^1.18.3",
-    "jasmine": "^3.2.0",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "supertest": "^3.1.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.0",
@@ -28,6 +29,7 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "http": "0.0.0",
+    "jest": "^23.5.0",
     "joi": "^13.4.0",
     "jsonwebtoken": "^8.3.0",
     "lodash": "^4.17.10",
